@@ -1,0 +1,176 @@
+<resources>
+    <string name="app_name">A Download Manager</string>
+
+    <!-- Navigation -->
+    <string name="nav_downloads">Downloads</string>
+    <string name="nav_browser">Browser</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Download list -->
+    <string name="downloads_title">Downloads</string>
+    <string name="downloads_empty">No downloads yet</string>
+    <string name="downloads_empty_hint">Add a link with + , or share one from your browser</string>
+    <string name="add_download">Add download</string>
+    <string name="search_hint">Search downloads</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_date">Date</string>
+    <string name="sort_name">Name</string>
+    <string name="sort_size">Size</string>
+    <string name="sort_status">Status</string>
+    <string name="sort_speed">Speed</string>
+    <string name="filter_all">All</string>
+    <string name="category_image">Images</string>
+    <string name="category_music">Music</string>
+    <string name="category_video">Video</string>
+    <string name="category_application">Apps</string>
+    <string name="category_document">Documents</string>
+    <string name="category_archive">Archives</string>
+    <string name="category_other">Other</string>
+
+    <!-- Status -->
+    <string name="status_queued">Queued</string>
+    <string name="status_probing">Checking…</string>
+    <string name="status_running">Downloading</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_merging">Merging</string>
+    <string name="status_converting">Converting</string>
+    <string name="status_verifying">Verifying</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_failed">Failed</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="status_scheduled">Scheduled</string>
+
+    <!-- Actions -->
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_open">Open</string>
+    <string name="action_pause_all">Pause all</string>
+    <string name="action_details">Details</string>
+    <string name="action_copy_link">Copy link</string>
+    <string name="action_add">Add</string>
+    <string name="action_close">Close</string>
+    <string name="action_download">Download</string>
+    <string name="action_ok">OK</string>
+    <string name="action_dismiss">Dismiss</string>
+
+    <!-- Add download sheet -->
+    <string name="add_sheet_title">New download</string>
+    <string name="field_url">Link</string>
+    <string name="field_file_name">File name (optional)</string>
+    <string name="field_connections">Connections: %1$d</string>
+    <string name="field_checksum">Checksum (MD5 / SHA-1 / SHA-256, optional)</string>
+    <string name="field_checksum_invalid">Not a valid 32, 40 or 64 character hex digest</string>
+    <string name="field_schedule">Start later</string>
+    <string name="field_schedule_at">Starts at %1$s</string>
+    <string name="url_invalid">Enter an http or https link</string>
+
+    <!-- Detail screen -->
+    <string name="detail_title">Details</string>
+    <string name="detail_speed_graph">Speed</string>
+    <string name="detail_connections">Connections</string>
+    <string name="detail_segment">#%1$d</string>
+    <string name="detail_segment_range">%1$s – %2$s</string>
+    <string name="detail_log">yt-dlp log</string>
+    <string name="detail_file">File</string>
+    <string name="detail_url">Source</string>
+    <string name="detail_checksum_ok">Checksum verified (%1$s)</string>
+    <string name="detail_checksum_failed">Checksum mismatch (%1$s) — file kept</string>
+    <string name="detail_checksum_expected">Expected: %1$s</string>
+    <string name="detail_checksum_actual">Actual: %1$s</string>
+    <string name="detail_retries">Retries: %1$d / %2$d</string>
+    <string name="detail_eta">%1$s left</string>
+    <string name="detail_of_total">%1$s of %2$s</string>
+
+    <!-- Video -->
+    <string name="video_quality_title">Choose quality</string>
+    <string name="video_audio_only">Audio only</string>
+    <string name="video_container">Container</string>
+    <string name="video_container_none">No conversion</string>
+    <string name="video_subtitles">Subtitles</string>
+    <string name="video_subtitles_off">Off</string>
+    <string name="video_subtitles_embed">Embed in video</string>
+    <string name="video_subtitles_separate">Separate .srt</string>
+    <string name="video_subtitle_langs">Languages (e.g. tr,en or all)</string>
+    <string name="video_auto_subs">Include auto generated subtitles</string>
+    <string name="video_analyzing">Reading formats…</string>
+    <string name="video_estimated_size">about %1$s</string>
+    <string name="video_phase_downloading">Downloading</string>
+    <string name="video_phase_merging">Merging</string>
+    <string name="video_phase_converting">Converting</string>
+    <string name="video_init_failed">Video engine could not start: %1$s</string>
+    <string name="video_no_formats">No downloadable video found on this page</string>
+
+    <!-- Browser -->
+    <string name="browser_url_hint">Search or enter address</string>
+    <string name="browser_download_video">Download video on this page</string>
+    <string name="browser_videos_found">%1$d video stream(s) found</string>
+    <string name="browser_desktop_site">Desktop site</string>
+    <string name="browser_clear_cookies">Clear cookies</string>
+    <string name="browser_back">Back</string>
+    <string name="browser_forward">Forward</string>
+    <string name="browser_reload">Reload</string>
+    <string name="browser_home">Home</string>
+
+    <!-- Clipboard -->
+    <string name="clipboard_prompt_title">Link copied</string>
+    <string name="clipboard_prompt_text">Download %1$s?</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_downloads">Downloads</string>
+    <string name="settings_max_concurrent">Simultaneous downloads: %1$d</string>
+    <string name="settings_connections">Connections per download: %1$d</string>
+    <string name="settings_speed_limit">Speed limit</string>
+    <string name="settings_speed_limit_value">%1$d KB/s total</string>
+    <string name="settings_speed_unlimited">Unlimited</string>
+    <string name="settings_retry">Automatic retry</string>
+    <string name="settings_retry_count">Attempts: %1$d</string>
+    <string name="settings_retry_delay">Wait between attempts: %1$d s</string>
+    <string name="settings_storage">Storage</string>
+    <string name="settings_folder">Download folder</string>
+    <string name="settings_folder_default">Downloads/A Download Manager</string>
+    <string name="settings_pick_folder">Choose folder</string>
+    <string name="settings_category_folders">Save into category subfolders</string>
+    <string name="settings_wifi_only">Wi-Fi only</string>
+    <string name="settings_capture">Capture</string>
+    <string name="settings_clipboard">Watch clipboard for links</string>
+    <string name="settings_video">Video</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_dynamic_color">Dynamic color</string>
+    <string name="settings_blur">Translucent surfaces</string>
+    <string name="settings_about">About</string>
+    <string name="settings_developed_by">Developed by Atakan</string>
+    <string name="settings_ytdlp_version">yt-dlp: %1$s</string>
+    <string name="settings_ytdlp_update">Check for yt-dlp update</string>
+    <string name="settings_ytdlp_updated">yt-dlp updated to %1$s</string>
+    <string name="settings_ytdlp_up_to_date">yt-dlp is up to date</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_progress">Download progress</string>
+    <string name="notification_channel_progress_desc">Shows active downloads with pause and cancel actions</string>
+    <string name="notification_channel_done">Finished downloads</string>
+    <string name="notification_channel_done_desc">Tells you when a download finishes or fails</string>
+    <string name="notification_summary_title">%1$d download(s) active</string>
+    <string name="notification_summary_text">%1$s · %2$s</string>
+    <string name="notification_completed">Download finished</string>
+    <string name="notification_failed">Download failed</string>
+    <string name="notification_checksum_failed">Checksum mismatch — file kept</string>
+    <string name="permission_notifications_rationale">Allow notifications so download progress and results can be shown.</string>
+    <string name="permission_grant">Allow</string>
+
+    <!-- Quick settings tile -->
+    <string name="tile_add_url">Add link</string>
+    <string name="tile_pause_queue">Pause downloads</string>
+
+    <!-- Errors -->
+    <string name="error_no_space">Not enough free space for %1$s</string>
+    <string name="error_generic">%1$s</string>
+    <string name="error_storage_permission">Storage permission is needed to save into the public Downloads folder on this Android version.</string>
+</resources>

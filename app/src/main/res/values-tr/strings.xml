@@ -1,0 +1,176 @@
+<resources>
+    <string name="app_name">A Download Manager</string>
+
+    <!-- Navigation -->
+    <string name="nav_downloads">İndirmeler</string>
+    <string name="nav_browser">Tarayıcı</string>
+    <string name="nav_settings">Ayarlar</string>
+
+    <!-- Download list -->
+    <string name="downloads_title">İndirmeler</string>
+    <string name="downloads_empty">Henüz indirme yok</string>
+    <string name="downloads_empty_hint">+ ile bağlantı ekle ya da tarayıcından paylaş</string>
+    <string name="add_download">İndirme ekle</string>
+    <string name="search_hint">İndirmelerde ara</string>
+    <string name="sort_by">Sıralama</string>
+    <string name="sort_date">Tarih</string>
+    <string name="sort_name">Ad</string>
+    <string name="sort_size">Boyut</string>
+    <string name="sort_status">Durum</string>
+    <string name="sort_speed">Hız</string>
+    <string name="filter_all">Tümü</string>
+    <string name="category_image">Resim</string>
+    <string name="category_music">Müzik</string>
+    <string name="category_video">Video</string>
+    <string name="category_application">Uygulama</string>
+    <string name="category_document">Belge</string>
+    <string name="category_archive">Arşiv</string>
+    <string name="category_other">Diğer</string>
+
+    <!-- Status -->
+    <string name="status_queued">Kuyrukta</string>
+    <string name="status_probing">Kontrol ediliyor…</string>
+    <string name="status_running">İndiriliyor</string>
+    <string name="status_paused">Duraklatıldı</string>
+    <string name="status_merging">Birleştiriliyor</string>
+    <string name="status_converting">Dönüştürülüyor</string>
+    <string name="status_verifying">Doğrulanıyor</string>
+    <string name="status_completed">Tamamlandı</string>
+    <string name="status_failed">Başarısız</string>
+    <string name="status_cancelled">İptal edildi</string>
+    <string name="status_scheduled">Zamanlandı</string>
+
+    <!-- Actions -->
+    <string name="action_pause">Duraklat</string>
+    <string name="action_resume">Sürdür</string>
+    <string name="action_cancel">İptal</string>
+    <string name="action_retry">Tekrar dene</string>
+    <string name="action_remove">Kaldır</string>
+    <string name="action_open">Aç</string>
+    <string name="action_pause_all">Tümünü duraklat</string>
+    <string name="action_details">Ayrıntılar</string>
+    <string name="action_copy_link">Bağlantıyı kopyala</string>
+    <string name="action_add">Ekle</string>
+    <string name="action_close">Kapat</string>
+    <string name="action_download">İndir</string>
+    <string name="action_ok">Tamam</string>
+    <string name="action_dismiss">Kapat</string>
+
+    <!-- Add download sheet -->
+    <string name="add_sheet_title">Yeni indirme</string>
+    <string name="field_url">Bağlantı</string>
+    <string name="field_file_name">Dosya adı (isteğe bağlı)</string>
+    <string name="field_connections">Bağlantı sayısı: %1$d</string>
+    <string name="field_checksum">Checksum (MD5 / SHA-1 / SHA-256, isteğe bağlı)</string>
+    <string name="field_checksum_invalid">32, 40 veya 64 karakterlik geçerli bir hex değeri değil</string>
+    <string name="field_schedule">Sonra başlat</string>
+    <string name="field_schedule_at">%1$s tarihinde başlar</string>
+    <string name="url_invalid">http veya https bağlantısı gir</string>
+
+    <!-- Detail screen -->
+    <string name="detail_title">Ayrıntılar</string>
+    <string name="detail_speed_graph">Hız</string>
+    <string name="detail_connections">Bağlantılar</string>
+    <string name="detail_segment">#%1$d</string>
+    <string name="detail_segment_range">%1$s – %2$s</string>
+    <string name="detail_log">yt-dlp kaydı</string>
+    <string name="detail_file">Dosya</string>
+    <string name="detail_url">Kaynak</string>
+    <string name="detail_checksum_ok">Checksum doğrulandı (%1$s)</string>
+    <string name="detail_checksum_failed">Checksum uyuşmadı (%1$s) — dosya silinmedi</string>
+    <string name="detail_checksum_expected">Beklenen: %1$s</string>
+    <string name="detail_checksum_actual">Bulunan: %1$s</string>
+    <string name="detail_retries">Deneme: %1$d / %2$d</string>
+    <string name="detail_eta">%1$s kaldı</string>
+    <string name="detail_of_total">%2$s / %1$s</string>
+
+    <!-- Video -->
+    <string name="video_quality_title">Kalite seç</string>
+    <string name="video_audio_only">Sadece ses</string>
+    <string name="video_container">Kapsayıcı</string>
+    <string name="video_container_none">Dönüştürmeden</string>
+    <string name="video_subtitles">Altyazı</string>
+    <string name="video_subtitles_off">Kapalı</string>
+    <string name="video_subtitles_embed">Videoya göm</string>
+    <string name="video_subtitles_separate">Ayrı .srt</string>
+    <string name="video_subtitle_langs">Diller (örn. tr,en veya all)</string>
+    <string name="video_auto_subs">Otomatik üretilen altyazıları da al</string>
+    <string name="video_analyzing">Formatlar okunuyor…</string>
+    <string name="video_estimated_size">yaklaşık %1$s</string>
+    <string name="video_phase_downloading">İndiriliyor</string>
+    <string name="video_phase_merging">Birleştiriliyor</string>
+    <string name="video_phase_converting">Dönüştürülüyor</string>
+    <string name="video_init_failed">Video motoru başlatılamadı: %1$s</string>
+    <string name="video_no_formats">Bu sayfada indirilebilir video bulunamadı</string>
+
+    <!-- Browser -->
+    <string name="browser_url_hint">Ara veya adres gir</string>
+    <string name="browser_download_video">Bu sayfadaki videoyu indir</string>
+    <string name="browser_videos_found">%1$d video akışı bulundu</string>
+    <string name="browser_desktop_site">Masaüstü site</string>
+    <string name="browser_clear_cookies">Çerezleri temizle</string>
+    <string name="browser_back">Geri</string>
+    <string name="browser_forward">İleri</string>
+    <string name="browser_reload">Yenile</string>
+    <string name="browser_home">Ana sayfa</string>
+
+    <!-- Clipboard -->
+    <string name="clipboard_prompt_title">Bağlantı kopyalandı</string>
+    <string name="clipboard_prompt_text">%1$s indirilsin mi?</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_downloads">İndirmeler</string>
+    <string name="settings_max_concurrent">Aynı anda indirme: %1$d</string>
+    <string name="settings_connections">İndirme başına bağlantı: %1$d</string>
+    <string name="settings_speed_limit">Hız sınırı</string>
+    <string name="settings_speed_limit_value">toplam %1$d KB/s</string>
+    <string name="settings_speed_unlimited">Sınırsız</string>
+    <string name="settings_retry">Otomatik yeniden deneme</string>
+    <string name="settings_retry_count">Deneme sayısı: %1$d</string>
+    <string name="settings_retry_delay">Denemeler arası bekleme: %1$d sn</string>
+    <string name="settings_storage">Depolama</string>
+    <string name="settings_folder">İndirme klasörü</string>
+    <string name="settings_folder_default">Downloads/A Download Manager</string>
+    <string name="settings_pick_folder">Klasör seç</string>
+    <string name="settings_category_folders">Kategori alt klasörlerine kaydet</string>
+    <string name="settings_wifi_only">Sadece Wi-Fi</string>
+    <string name="settings_capture">Yakalama</string>
+    <string name="settings_clipboard">Panodaki bağlantıları izle</string>
+    <string name="settings_video">Video</string>
+    <string name="settings_appearance">Görünüm</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_system">Sistem</string>
+    <string name="settings_theme_light">Açık</string>
+    <string name="settings_theme_dark">Koyu</string>
+    <string name="settings_dynamic_color">Dinamik renk</string>
+    <string name="settings_blur">Yarı saydam yüzeyler</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_developed_by">Atakan tarafından geliştirildi</string>
+    <string name="settings_ytdlp_version">yt-dlp: %1$s</string>
+    <string name="settings_ytdlp_update">yt-dlp güncellemesini denetle</string>
+    <string name="settings_ytdlp_updated">yt-dlp %1$s sürümüne güncellendi</string>
+    <string name="settings_ytdlp_up_to_date">yt-dlp güncel</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_progress">İndirme ilerlemesi</string>
+    <string name="notification_channel_progress_desc">Etkin indirmeleri duraklat ve iptal aksiyonlarıyla gösterir</string>
+    <string name="notification_channel_done">Tamamlanan indirmeler</string>
+    <string name="notification_channel_done_desc">İndirme bitince veya başarısız olunca haber verir</string>
+    <string name="notification_summary_title">%1$d indirme sürüyor</string>
+    <string name="notification_summary_text">%1$s · %2$s</string>
+    <string name="notification_completed">İndirme tamamlandı</string>
+    <string name="notification_failed">İndirme başarısız</string>
+    <string name="notification_checksum_failed">Checksum uyuşmadı — dosya silinmedi</string>
+    <string name="permission_notifications_rationale">İndirme ilerlemesini ve sonucunu gösterebilmek için bildirim izni gerekiyor.</string>
+    <string name="permission_grant">İzin ver</string>
+
+    <!-- Quick settings tile -->
+    <string name="tile_add_url">Bağlantı ekle</string>
+    <string name="tile_pause_queue">İndirmeleri duraklat</string>
+
+    <!-- Errors -->
+    <string name="error_no_space">%1$s için yeterli boş alan yok</string>
+    <string name="error_generic">%1$s</string>
+    <string name="error_storage_permission">Bu Android sürümünde ortak Downloads klasörüne kaydetmek için depolama izni gerekiyor.</string>
+</resources>
