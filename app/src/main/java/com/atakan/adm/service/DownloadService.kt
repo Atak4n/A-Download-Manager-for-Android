@@ -17,6 +17,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -83,7 +84,7 @@ class DownloadService : Service() {
         observer = scope.launch {
             combine(repository.observeAll(), engine.progress) { downloads, progress ->
                 downloads.filter { it.status.isActive || it.status == DownloadStatus.QUEUED } to progress
-            }.collect { (active, progress) ->
+            }.sample(350L).collect { (active, progress) ->
                 if (active.isEmpty() && engine.activeCount == 0) {
                     stopSelf()
                     return@collect

@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.atakan.adm.R
+import com.atakan.adm.capture.UrlExtractor
 import com.atakan.adm.core.util.Checksum
 import java.text.DateFormat
 import java.util.Date
@@ -158,13 +159,18 @@ fun AddDownloadSheet(
                 TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) }
                 Button(
                     onClick = {
-                        onConfirm(
-                            url.trim(),
-                            fileName.trim().takeIf { it.isNotBlank() },
-                            connections.roundToInt(),
-                            checksum.trim().takeIf { it.isNotBlank() },
-                            if (scheduled) scheduledAt else null,
-                        )
+                        val trimmedUrl = url.trim()
+                        if (UrlExtractor.looksLikeVideo(trimmedUrl)) {
+                            onVideoRequested(trimmedUrl)
+                        } else {
+                            onConfirm(
+                                trimmedUrl,
+                                fileName.trim().takeIf { it.isNotBlank() },
+                                connections.roundToInt(),
+                                checksum.trim().takeIf { it.isNotBlank() },
+                                if (scheduled) scheduledAt else null,
+                            )
+                        }
                     },
                     enabled = urlValid && !checksumInvalid,
                     modifier = Modifier.padding(start = 8.dp),

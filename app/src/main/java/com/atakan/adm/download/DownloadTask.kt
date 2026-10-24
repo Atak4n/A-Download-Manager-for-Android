@@ -475,15 +475,23 @@ class DownloadTask(
     private suspend fun reportProgress(entity: DownloadEntity, gate: ConnectionGate) {
         var lastTotal = segmentCounters.values.sumOf { it.get() }
         var lastPersist = 0L
+        var smoothedSpeed = 0L
         while (coroutineContext.isActive) {
             delay(PROGRESS_INTERVAL_MILLIS)
             val segments = segmentDao.forDownload(downloadId)
             val total = segmentCounters.values.sumOf { it.get() }
             val delta = (total - lastTotal).coerceAtLeast(0)
-            val speed = delta * 1000 / PROGRESS_INTERVAL_MILLIS
+            val instantSpeed = delta * 1000 / PROGRESS_INTERVAL_MILLIS
             lastTotal = total
 
-            speedHistory.addLast(speed)
+            // Exponential moving average: 0.7 current + 0.3 instant, reduces jump spikes
+            smoothedSpeed = if (smoothedSpeed == 0L) {
+                instantSpeed
+            } else {
+                ((smoothedSpeed * 7 + instantSpeed * 3) / 10).coerceAtLeast(0)
+            }
+
+            speedHistory.addLast(smoothedSpeed)
             while (speedHistory.size > SPEED_HISTORY_SIZE) speedHistory.removeFirst()
 
             onProgress(
@@ -491,7 +499,7 @@ class DownloadTask(
                     downloadId = downloadId,
                     downloadedBytes = total,
                     totalBytes = entity.totalBytes,
-                    bytesPerSecond = speed,
+                    bytesPerSecond = smoothedSpeed,
                     segments = segments.map { segment ->
                         val live = segmentCounters[segment.index]?.get() ?: segment.downloadedBytes
                         SegmentProgress(
