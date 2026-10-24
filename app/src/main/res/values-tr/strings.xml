@@ -100,6 +100,8 @@
     <string name="video_phase_downloading">İndiriliyor</string>
     <string name="video_phase_merging">Birleştiriliyor</string>
     <string name="video_phase_converting">Dönüştürülüyor</string>
+    <string name="video_phase_extracting_audio">Ses ayıklanıyor</string>
+    <string name="video_phase_writing_subtitles">Altyazılar yazılıyor</string>
     <string name="video_init_failed">Video motoru başlatılamadı: %1$s</string>
     <string name="video_no_formats">Bu sayfada indirilebilir video bulunamadı</string>
 

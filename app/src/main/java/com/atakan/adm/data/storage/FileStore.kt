@@ -37,6 +37,35 @@ class FileStore @Inject constructor(
 
     fun partFile(downloadId: Long): File = File(partDir(), "$downloadId.part")
 
+    /**
+     * Pre-allocates space on disk for the download part file.
+     * Uses setLength() followed by checking usable space.
+     * Throws [IOException] if disk space is insufficient or allocation fails.
+     */
+    fun preallocatePartFile(downloadId: Long, totalBytes: Long): File {
+        val part = partFile(downloadId)
+        if (totalBytes <= 0) return part
+        if (!com.atakan.adm.core.util.StorageSpace.hasRoomFor(partDir(), totalBytes)) {
+            throw IOException("Not enough free space on device: $totalBytes bytes needed")
+        }
+        part.parentFile?.mkdirs()
+        java.io.RandomAccessFile(part, "rw").use { raf ->
+            raf.setLength(totalBytes)
+            // Block write to prevent sparse file and force physical allocation
+            val zeroBuf = ByteArray(64 * 1024)
+            var written = 0L
+            val target = minOf(totalBytes, 1024L * 1024L) // İlk 1 MB'ı fiziksel yaz, filesystem blok tahsis etsin
+            raf.seek(0)
+            while (written < target) {
+                val toWrite = minOf(zeroBuf.size.toLong(), target - written).toInt()
+                raf.write(zeroBuf, 0, toWrite)
+                written += toWrite
+            }
+            raf.fd.sync()
+        }
+        return part
+    }
+
     fun logFile(downloadId: Long): File =
         File(File(context.filesDir, LOG_DIR).apply { mkdirs() }, "$downloadId.log")
 

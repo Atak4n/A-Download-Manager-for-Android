@@ -104,4 +104,33 @@ class SegmentPlannerTest {
         val unknown = SegmentPlanner.singleSegment(downloadId = 7, totalBytes = -1)
         assertEquals(-1L, unknown.first().endByte)
     }
+
+    @Test
+    fun `splitLargestPending divides segment with sufficient remaining bytes`() {
+        val segments = listOf(
+            SegmentEntity(id = 1, downloadId = 42, index = 0, startByte = 0, endByte = 10L * 1024 * 1024 - 1, downloadedBytes = 2L * 1024 * 1024),
+            SegmentEntity(id = 2, downloadId = 42, index = 1, startByte = 10L * 1024 * 1024, endByte = 12L * 1024 * 1024 - 1, downloadedBytes = 1L * 1024 * 1024),
+        )
+        // Segment 0 has 8MB remaining (> 2MB min). It should be split into 4MB + 4MB.
+        val result = SegmentPlanner.splitLargestPending(segments, newIndex = 2)
+        org.junit.Assert.assertNotNull(result)
+        val (newDonorEnd, newSegment) = result!!
+
+        assertEquals(0 + 2L * 1024 * 1024 + 4L * 1024 * 1024 - 1, newDonorEnd)
+        assertEquals(newDonorEnd + 1, newSegment.startByte)
+        assertEquals(10L * 1024 * 1024 - 1, newSegment.endByte)
+        assertEquals(2, newSegment.index)
+        assertEquals(42L, newSegment.downloadId)
+        assertEquals(0L, newSegment.downloadedBytes)
+    }
+
+    @Test
+    fun `splitLargestPending returns null when remaining bytes are below threshold`() {
+        val segments = listOf(
+            SegmentEntity(id = 1, downloadId = 42, index = 0, startByte = 0, endByte = 1L * 1024 * 1024, downloadedBytes = 500L * 1024),
+        )
+        // Remaining is ~500KB (< 2MB min)
+        val result = SegmentPlanner.splitLargestPending(segments, newIndex = 1)
+        org.junit.Assert.assertNull(result)
+    }
 }

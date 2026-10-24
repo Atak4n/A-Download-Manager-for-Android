@@ -75,4 +75,40 @@ object SegmentPlanner {
     /** Segments that still have work left. */
     fun pending(segments: List<SegmentEntity>): List<SegmentEntity> =
         segments.filterNot { it.isComplete }
+
+    /**
+     * Finds the segment with the largest remaining byte work that can be split into two.
+     * To be eligible, the remaining un-downloaded portion must be at least 2 * [MIN_SEGMENT_BYTES].
+     * Returns a Pair of:
+     * - newEndByte for the donor segment (clamped to its current progress + half remaining)
+     * - New SegmentEntity for the new sub-segment covering (newEndByte + 1 .. original endByte)
+     * Or null if no segment has enough remaining work to justify splitting.
+     */
+    fun splitLargestPending(
+        segments: List<SegmentEntity>,
+        newIndex: Int,
+    ): Pair<Long, SegmentEntity>? {
+        val candidate = segments
+            .filter { !it.isComplete && it.endByte > 0 }
+            .maxByOrNull { it.remainingBytes }
+            ?: return null
+
+        val remaining = candidate.remainingBytes
+        if (remaining < 2 * MIN_SEGMENT_BYTES) return null
+
+        val splitSize = remaining / 2
+        val newEndForDonor = candidate.startByte + candidate.downloadedBytes + splitSize - 1
+        val newSegmentStart = newEndForDonor + 1
+        val newSegmentEnd = candidate.endByte
+
+        val newSegment = SegmentEntity(
+            downloadId = candidate.downloadId,
+            index = newIndex,
+            startByte = newSegmentStart,
+            endByte = newSegmentEnd,
+            downloadedBytes = 0L,
+            status = SegmentStatus.PENDING,
+        )
+        return Pair(newEndForDonor, newSegment)
+    }
 }

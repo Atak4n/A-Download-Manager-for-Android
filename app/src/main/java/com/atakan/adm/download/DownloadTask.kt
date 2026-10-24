@@ -32,6 +32,10 @@ import kotlin.coroutines.coroutineContext
 private class ServerBusyException(val code: Int, val retryAfterMillis: Long?) :
     IOException("HTTP $code")
 
+/** Server returned HTTP 416 or ETag mismatch; download needs clean restart from byte 0. */
+class RangeNotSatisfiableException(message: String = "HTTP 416 Range Not Satisfiable") :
+    IOException(message)
+
 /** Runs one download: probe, split, transfer, verify, publish. */
 class DownloadTask(
     private val downloadId: Long,
@@ -59,7 +63,13 @@ class DownloadTask(
         var entity = downloadDao.find(downloadId) ?: return Outcome.Failed("Download not found")
         return try {
             entity = prepare(entity)
-            transfer(entity)
+            try {
+                transfer(entity)
+            } catch (rns: RangeNotSatisfiableException) {
+                // HTTP 416 or ETag mismatch: wipe segments and scratch file, restart from byte 0 cleanly
+                entity = resetAndPrepareClean(entity)
+                transfer(entity)
+            }
         } catch (cancellation: CancellationException) {
             persistOutcome(DownloadStatus.PAUSED)
             Outcome.Paused
@@ -91,11 +101,10 @@ class DownloadTask(
         )
         val probe = prober.probe(entity.url, credentials)
 
-        val partFile = fileStore.partFile(downloadId)
-        if (probe.totalBytes > 0 && !StorageSpace.hasRoomFor(fileStore.partDir(), probe.totalBytes)) {
-            throw IOException(
-                "Not enough free space: ${probe.totalBytes} bytes needed",
-            )
+        val partFile = if (probe.totalBytes > 0) {
+            fileStore.preallocatePartFile(downloadId, probe.totalBytes)
+        } else {
+            fileStore.partFile(downloadId)
         }
 
         val appSettings = settings.current()
@@ -136,6 +145,22 @@ class DownloadTask(
         return entity
     }
 
+    /** Cleans up stale part file and segments when HTTP 416 or ETag mismatch occurs, resetting progress. */
+    private suspend fun resetAndPrepareClean(current: DownloadEntity): DownloadEntity {
+        segmentDao.deleteForDownload(downloadId)
+        val partFile = File(current.partFilePath)
+        if (partFile.exists()) partFile.delete()
+
+        val resetEntity = current.copy(
+            downloadedBytes = 0L,
+            etag = null,
+            lastModified = null,
+            resolvedUrl = null,
+        )
+        downloadDao.update(resetEntity)
+        return prepare(resetEntity)
+    }
+
     // --------------------------------------------------------------- transfer
 
     private suspend fun transfer(entity: DownloadEntity): Outcome {
@@ -173,11 +198,39 @@ class DownloadTask(
                 val reporter = launch { reportProgress(entity, gate) }
                 try {
                     val pending = SegmentPlanner.pending(segments)
-                    pending.map { segment ->
-                        launch(Dispatchers.IO) {
+                    val activeJobs = mutableListOf<kotlinx.coroutines.Job>()
+                    pending.forEach { segment ->
+                        activeJobs += launch(Dispatchers.IO) {
                             runSegment(entity, segment, channel, gate)
                         }
-                    }.forEach { it.join() }
+                    }
+
+                    // Dynamic re-segmentation watcher
+                    launch {
+                        while (coroutineContext.isActive) {
+                            delay(RESEGMENT_CHECK_INTERVAL_MILLIS)
+                            if (!entity.supportsRange || entity.totalBytes <= 0) continue
+
+                            val currentSegments = segmentDao.forDownload(downloadId)
+                            val nextIndex = currentSegments.maxOfOrNull { it.index }?.plus(1) ?: currentSegments.size
+                            val splitResult = SegmentPlanner.splitLargestPending(currentSegments, nextIndex)
+
+                            if (splitResult != null && gate.current < entity.connections) {
+                                val (donorNewEnd, newSegment) = splitResult
+                                val donor = currentSegments.firstOrNull { it.endByte == newSegment.endByte }
+                                if (donor != null && donor.status == SegmentStatus.RUNNING) {
+                                    segmentDao.setEndByte(donor.id, donorNewEnd)
+                                    segmentDao.insertAll(listOf(newSegment))
+                                    segmentCounters[newSegment.index] = AtomicLong(0L)
+                                    activeJobs += launch(Dispatchers.IO) {
+                                        runSegment(entity, newSegment, channel, gate)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    activeJobs.forEach { it.join() }
                 } finally {
                     reporter.cancel()
                 }
@@ -299,15 +352,24 @@ class DownloadTask(
             when {
                 it.code == 429 || it.code == 503 || it.code == 500 ->
                     throw ServerBusyException(it.code, retryAfterMillis(it.header("Retry-After")))
+                it.code == 416 ->
+                    throw RangeNotSatisfiableException("Server returned HTTP 416 for range $range")
                 range != null && it.code == 200 && from > 0L ->
-                    throw IOException("Server ignored the resume request (HTTP 200)")
+                    throw RangeNotSatisfiableException("Server ignored resume request (HTTP 200 instead of 206)")
                 !it.isSuccessful -> throw IOException("HTTP ${it.code} ${it.message}")
+            }
+
+            // Verify ETag / Last-Modified if server provides one and we have recorded validator
+            val currentEtag = it.header("ETag")?.trim()
+            if (entity.etag != null && currentEtag != null && entity.etag != currentEtag) {
+                throw RangeNotSatisfiableException("Remote content changed (ETag mismatch: ${entity.etag} vs $currentEtag)")
             }
 
             val source = it.body.byteStream()
             val buffer = ByteArray(limiter.chunkSize().coerceAtLeast(4 * 1024))
             var position = segment.startByte + counter.get()
             val limit = if (segment.endByte >= 0) segment.endByte else Long.MAX_VALUE
+            var bytesSinceLastFlush = 0L
 
             while (coroutineContext.isActive) {
                 val maxRead = minOf(buffer.size.toLong(), limit - position + 1).toInt()
@@ -324,6 +386,17 @@ class DownloadTask(
                 }
                 position += read
                 counter.addAndGet(read.toLong())
+                bytesSinceLastFlush += read
+
+                // Periodic buffer flush & fsync for crash durability
+                if (bytesSinceLastFlush >= FLUSH_THRESHOLD_BYTES) {
+                    channel.force(false)
+                    bytesSinceLastFlush = 0L
+                }
+            }
+
+            if (bytesSinceLastFlush > 0) {
+                channel.force(false)
             }
 
             if (segment.endByte < 0) {
@@ -454,6 +527,9 @@ class DownloadTask(
         const val PROGRESS_INTERVAL_MILLIS = 500L
         const val PERSIST_INTERVAL_MILLIS = 2_000L
         const val SPEED_HISTORY_SIZE = 60
+        const val FLUSH_THRESHOLD_BYTES = 1_048_576L // 1 MB
+        const val RESEGMENT_CHECK_INTERVAL_MILLIS = 10_000L // 10 sn
+        const val RESEGMENT_MIN_REMAINING_BYTES = 2 * 1_048_576L // 2 MB
 
         fun retryAfterMillis(header: String?): Long? {
             val seconds = header?.trim()?.toLongOrNull() ?: return null

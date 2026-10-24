@@ -179,10 +179,14 @@ class VideoDownloadTask(
     ) {
         appendLog(logFile, line)
         val phaseRes = when {
+            line.contains("[ExtractAudio]") ->
+                com.atakan.adm.R.string.video_phase_extracting_audio
+            line.contains("[info] Writing video subtitles") || line.contains("[SubtitlesConvertor]") ||
+                line.contains("[EmbedSubtitle]") ->
+                com.atakan.adm.R.string.video_phase_writing_subtitles
             line.contains("[Merger]") || line.contains("Merging formats") ->
                 com.atakan.adm.R.string.video_phase_merging
-            line.contains("[VideoConvertor]") || line.contains("[ExtractAudio]") ||
-                line.contains("[VideoRemuxer]") || line.contains("Converting") ->
+            line.contains("[VideoConvertor]") || line.contains("[VideoRemuxer]") || line.contains("Converting") ->
                 com.atakan.adm.R.string.video_phase_converting
             else -> com.atakan.adm.R.string.video_phase_downloading
         }
