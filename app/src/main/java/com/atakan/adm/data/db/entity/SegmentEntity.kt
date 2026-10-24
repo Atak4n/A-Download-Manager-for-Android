@@ -38,5 +38,8 @@ data class SegmentEntity(
     /** Total bytes this segment must deliver, or -1 when open ended. */
     val length: Long get() = if (endByte < 0) -1L else endByte - startByte + 1
 
+    /** Remaining bytes left to download in this segment, or 0 if complete/unbounded. */
+    val remainingBytes: Long get() = if (endByte < 0) 0L else (length - downloadedBytes).coerceAtLeast(0L)
+
     val isComplete: Boolean get() = endByte >= 0 && downloadedBytes >= length
 }
